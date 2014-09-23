@@ -75,10 +75,10 @@
   (timbre/info "lumprj is shutting down..."))
 
 (defn template-error-page [handler]
-  (if (env :selmer-dev)
+  (if-not (env :selmer-dev)
     (fn [request]
       (try
-        (handler request)
+        (do (println request) (handler request))
         (catch clojure.lang.ExceptionInfo ex
           (let [{:keys [type error-template] :as data} (ex-data ex)]
             (if (= :selmer-validation-error type)

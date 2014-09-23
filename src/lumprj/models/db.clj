@@ -534,9 +534,10 @@
 
   )
 (defn updatesendmessage [key-values]
+
   (update sendmessage
     (set-fields key-values)
-    (where {:id  (:id key-values)}
+    (where {:id  (get key-values "id")}
       )
     )
   )

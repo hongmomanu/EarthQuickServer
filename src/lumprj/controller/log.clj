@@ -2,6 +2,7 @@
   (:use compojure.core)
   (:require [lumprj.models.db :as db]
             [noir.response :as resp]
+            [clojure.data.json :as json]
             )
   )
 
@@ -62,8 +63,15 @@
   )
 (defn log-sendmessage-update [values]
 
-  (db/updatesendmessage values)
-  (resp/json {:success true})
+  (let [
+         fieldsvalue (if (nil?(get values "sendmethod"))values (assoc values "sendmethod" (json/write-str (get values "sendmethod"))))
+         ]
+
+    (db/updatesendmessage fieldsvalue)
+    (resp/json {:success true})
+    )
+
+
 
   )
 (defn log-sendmessage-del [id]
