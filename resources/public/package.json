@@ -1,0 +1,36 @@
+{
+  "name": "webkitprj",
+  "description": "The best project ever.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/hongmomanu/nodewebkitprj",
+  "author": {
+    "name": "jack",
+    "email": "hongmomanu@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hongmomanu/nodewebkitprj.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hongmomanu/nodewebkitprj/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/hongmomanu/nodewebkitprj/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "index.html",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+    "window": {
+        "title": "速报优化平台",
+        /*"icon": "link.png",*/
+        "toolbar": true,
+
+        "position": "mouse"
+
+    },
+  "keywords": []
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/jee
+                           http://www.springframework.org/schema/jee/spring-jee-2.0.xsd">
+	
+	 <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>failover:(tcp://10.33.253.11:61616)</value>
+				</property>
+				<property name="userName">
+					<value>system</value>
+				</property>
+				<property name="password">
+					<value>manager</value>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	  
+	<bean id="listenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="concurrentConsumers" value="1" />
+		<property name="connectionFactory" ref="jmsFactory" />
+		<property name="pubSubDomain" value="true" />
+		<property name="destinationName" value="topic/rts/location, topic/rts/pick, topic/rts/trigController" />
+		<property name="messageListener" ref="amqEarService" />
+	</bean>
+
+
+	 <bean id="jmsSender" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory">
+			<ref local="jmsFactory" />
+		</property>
+		<property name="pubSubDomain" value="true" />
+		<property name="deliveryPersistent" value="false" />
+		<property name="defaultDestinationName" value="" />
+	</bean>
+
+
+	<bean id="amqEarService" class="cn.org.gddsn.jopens.pod.amq.AmqEarService">
+		<property name="jmsTemplate">
+			<ref local="jmsSender" />
+		</property>
+		<property name="container" ref="listenerContainer" />
+
+	</bean>
+
+
+</beans>
