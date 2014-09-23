@@ -61,6 +61,9 @@
 (defentity sendmessage
   (database db)
   )
+(defentity messagetel
+  (database db)
+  )
 
 (defentity stations
   (database db)
@@ -486,6 +489,13 @@
     (order :id :DESC)
     )
   )
+(defn log-msgusers-list [params]
+  (select messagetel
+    (limit (:limit params))
+    (offset (:start params))
+    (order :id :DESC)
+    )
+  )
 
 (defn get-station-code [code]
   (select stations
@@ -533,6 +543,18 @@
     )
 
   )
+(defn addnewsenduser [key-values]
+  (insert messagetel
+    (values  key-values)
+    )
+
+  )
+(defn getuserbytel [tel]
+  (select messagetel
+    (where {:tel tel})
+    (aggregate (count :id) :counts)
+    )
+  )
 (defn updatesendmessage [key-values]
 
   (update sendmessage
@@ -572,6 +594,11 @@
   )
 (defn log-sendmessage-count [params]
   (select sendmessage
+    (aggregate (count :id) :counts)
+    )
+  )
+(defn log-msgusers-count [params]
+  (select messagetel
     (aggregate (count :id) :counts)
     )
   )

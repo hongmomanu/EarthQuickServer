@@ -22,6 +22,20 @@
 
     )
 
+  (GET "/log/getSendMsgUsers" request
+    (logmanager/log-msgusers-list (:params  request))
+
+    )
+
+  (GET "/log/imptelusers" [filepath]
+     (logmanager/log-imptelusers filepath)
+    )
+
+  (POST "/log/insertSendMsgUsers" request
+    (logmanager/log-msgusers-insert (:form-params  request))
+
+    )
+
   (POST "/log/insertSendMsgConfig" request
     (logmanager/log-sendmessage-insert (:form-params  request))
 
