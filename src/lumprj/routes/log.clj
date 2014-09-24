@@ -22,6 +22,13 @@
 
     )
 
+  (GET "/log/sendtelmsg" [content]
+    (logmanager/sendtelmsg content)
+    )
+  (POST "/log/sendtelmsg" [content]
+    (logmanager/sendtelmsg content)
+    )
+
   (GET "/log/getSendMsgUsers" request
     (logmanager/log-msgusers-list (:params  request))
 

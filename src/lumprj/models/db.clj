@@ -497,6 +497,10 @@
     )
   )
 
+(defn log-msgusers-all []
+  (select messagetel)
+  )
+
 (defn get-station-code [code]
   (select stations
     (fields :stationcode :stationname :networkcode :networkname)

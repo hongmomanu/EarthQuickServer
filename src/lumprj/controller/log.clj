@@ -44,29 +44,41 @@
        )
 
   )
+(defn sendtelmsg [content]
+  (let [
 
-(defn log-imptelusers [filepath]
-  (let [data (:content (first (:content (xml/parse filepath))))
-        telkey {:134 1 :135 1  :136 1   :137 1   :138 1   :139 1   :150 1   :151 1  :152 1 :157 1 :158 1  :159 1  :182 1  :183 1
-             :187 1 :188 1  :130 2  :131 2  :132 2  :155 2  :156 2  :185 2
-         :186 2  :133 3  :153 3  :180 3 :189  3}
-        ]
-    (doall(map #(sendtelmsg (:tel (:attrs %)) (:name (:attrs %)) telkey) data))
+         users   (db/log-msgusers-all)
+         telkey {:134 1 :135 1  :136 1   :137 1   :138 1   :139 1   :150 1   :151 1  :152 1 :157 1 :158 1  :159 1  :182 1  :183 1
+                 :187 1 :188 1  :130 2  :131 2  :132 2  :155 2  :156 2  :185 2
+                 :186 2  :133 3  :153 3  :180 3 :189  3}
+
+         ]
+    (doall (map #(db/insertmsm (:tel %) content (get telkey (keyword (subs (:tel %) 0 3)))) users))
     (resp/json {:success true})
     )
 
-
   )
-(defn sendtelmsg [telnum username telkey]
+(defn insert-users [telnum username]
   (let [
-          telpart (get telkey (keyword (subs telnum 0 3)))
-          nums (:counts (first (db/getuserbytel telnum)))
+         nums (:counts (first (db/getuserbytel telnum)))
          ]
     (if (= nums 0) (db/addnewsenduser {:username username :tel telnum}))
 
     )
 
   )
+
+
+(defn log-imptelusers [filepath]
+  (let [data (:content (first (:content (xml/parse filepath))))
+        ]
+    (doall(map #(insert-users (:tel (:attrs %)) (:name (:attrs %)) ) data))
+    (resp/json {:success true})
+    )
+
+
+  )
+
 (defn log-msgusers-list [params]
   (resp/json
     {
