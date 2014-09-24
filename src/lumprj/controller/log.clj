@@ -3,6 +3,7 @@
   (:require [lumprj.models.db :as db]
             [noir.response :as resp]
             [clojure.data.json :as json]
+            [clj-http.client :as client]
             [clojure.xml :as xml]
             )
   )
@@ -128,5 +129,29 @@
 
   (db/delsendmessage id)
   (resp/json {:success true})
+  )
+
+(defn log-sendsoap [url content action]
+  (let [
+         ;h {"SOAPAction" action}
+         content (client/post url {:body content  :content-type  "application/soap+xml; charset=utf-8"   :socket-timeout 10000
+                                                       :conn-timeout 10000})       ;:form-params (dissoc query-params "url")
+        ]
+    (:body content)
+    )
+
+  )
+
+(defn log-sendweibo [username password content]
+  (let [
+         url  "https://api.weibo.com/2/statuses/update.json"
+         resp (client/post url {:basic-auth [username password]
+                                :form-params {:status content :source "2702428363"}
+                                :socket-timeout 10000
+                                :conn-timeout 10000})       ;:form-params (dissoc query-params "url")
+        ]
+    (:body resp)
+    )
+
   )
 

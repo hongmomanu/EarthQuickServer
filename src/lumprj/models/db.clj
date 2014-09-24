@@ -794,6 +794,7 @@
   )
 
 (defn insertmsm [tel msg telpart]
+
   (with-db orcldb
     (exec-raw ["insert into m_sms_queue (TELNUMBER,MSGCONTENT,state,telpart) values (?,?,?,?)" [tel msg 0 telpart]])
     )

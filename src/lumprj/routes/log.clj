@@ -55,6 +55,22 @@
     (logmanager/log-sendmessage-del id)
 
     )
+  (GET "/log/sendweibo" [username password content]
+
+    (logmanager/log-sendweibo username password content)
+    )
+  (POST "/log/sendweibo" [username password content]
+
+    (logmanager/log-sendweibo username password content)
+    )
+  (GET "/log/sendsoap" [url content action]
+
+    (logmanager/log-sendsoap url content action)
+    )
+
+ (POST "/log/sendsoap" [url content action]
+    (logmanager/log-sendsoap url content action)
+    )
 
 
 
