@@ -547,6 +547,14 @@
     )
 
   )
+
+(defn delsenduser [id]
+  (delete messagetel
+    (where {:id id})
+    )
+  )
+
+
 (defn addnewsenduser [key-values]
   (insert messagetel
     (values  key-values)
@@ -557,6 +565,13 @@
   (select messagetel
     (where {:tel tel})
     (aggregate (count :id) :counts)
+    )
+  )
+(defn updatesenduser [key-values]
+  (update messagetel
+    (set-fields key-values)
+    (where {:id  (get key-values "id")}
+      )
     )
   )
 (defn updatesendmessage [key-values]

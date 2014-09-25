@@ -43,12 +43,21 @@
 
     )
 
+  (POST "/log/delSendMsgUsers" [id]
+    (logmanager/log-msgusers-del id)
+
+    )
+
   (POST "/log/insertSendMsgConfig" request
     (logmanager/log-sendmessage-insert (:form-params  request))
 
     )
   (POST "/log/updateSendMsgConfig" request
     (logmanager/log-sendmessage-update (:form-params  request))
+
+    )
+  (POST "/log/updateSendUserConfig" request
+    (logmanager/log-senduser-update (:form-params  request))
 
     )
   (POST "/log/delSendMsgConfig" [id]

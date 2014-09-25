@@ -132,6 +132,10 @@
     )
 
   )
+(defn log-msgusers-del [id]
+  (db/delsenduser id)
+  (resp/json {:success true})
+  )
 (defn log-sendmessage-update [values]
 
   (let [
@@ -144,6 +148,11 @@
 
 
 
+  )
+(defn log-senduser-update [values]
+
+  (db/updatesenduser values)
+  (resp/json {:success true})
   )
 (defn log-sendmessage-del [id]
 
@@ -162,10 +171,14 @@
 
   )
 
+
 (defn log-sendweibo [username password content]
   (let [
          url  "https://api.weibo.com/2/statuses/update.json"
-         resp (client/post url {:basic-auth [username password]
+         h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"}
+         resp (client/post url {
+                                 :headers h
+                                :basic-auth [username password]
                                 :form-params {:status content :source "2702428363"}
                                 :socket-timeout 10000
                                 :conn-timeout 10000})       ;:form-params (dissoc query-params "url")
