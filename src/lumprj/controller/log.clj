@@ -5,6 +5,7 @@
             [clojure.data.json :as json]
             [clj-http.client :as client]
             [clojure.xml :as xml]
+            ;;[clj-soap.core :as soap]
             )
   )
 
@@ -21,6 +22,20 @@
     (resp/json (db/log-duty-statics-dayinfo day))
     (resp/json (db/log-system-statics-dayinfo day))
     )
+  )
+
+#_(defn log-wlsdtest []
+
+  (let [client (soap/client-fn "http://www.zjdz.gov.cn/webservice/articleapi.asmx")
+        data  (client :GetAllCatalogList "ZJDZ" "L9dP2kaB")
+        ]
+
+    (resp/json {:success true :msg data})
+
+    )
+
+
+
   )
 
 (defn log-system-del [params]
@@ -99,10 +114,15 @@
 
   )
 (defn log-sendmessage-insert [values]
+  (let [ fieldsvalue (assoc values "sendmethod" (json/write-str (get values "sendmethod")))
+         ]
 
-  (if (> (first (vals (db/addnewsendmessage values))) 0) (resp/json {:success true})
-    (resp/json {:success false :msg "插入数据失败"})
+    (if (> (first (vals (db/addnewsendmessage fieldsvalue))) 0) (resp/json {:success true})
+      (resp/json {:success false :msg "插入数据失败"})
+      )
     )
+
+
 
   )
 (defn log-msgusers-insert [values]
