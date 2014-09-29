@@ -1,4 +1,7 @@
 (ns lumprj.controller.log
+  (:import (lumprj.java.eqim ImgIdent)
+           (java.net URL)
+           )
   (:use compojure.core)
   (:require [lumprj.models.db :as db]
             [noir.response :as resp]
@@ -185,6 +188,48 @@
         ]
     (:body resp)
     )
+
+  )
+
+
+
+(defn log-getjopensdata [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url]
+  (let [my-cs (clj-http.cookies/cookie-store)
+        h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"}
+        ]
+    ;(resp/json {:success true})
+    (try
+      (resp/json {:success true :msg (:body (client/post url { :headers h :form-params  {
+                                                                             :page "000"
+                                                                              :startYear startYear
+                                                                              :startMonth startMonth
+                                                                              :startDay startDay
+                                                                              :startHour startHour
+                                                                              :stopYear stopYear
+                                                                              :stopMonth stopMonth
+                                                                              :stopDay stopDay
+                                                                              :stopHour stopHour
+                                                                              ;:stopMinute "01"
+                                                                              :lonmin "-180"
+                                                                              :lonmax "180"
+                                                                              :latmin "-90"
+                                                                              :latmax "90"
+                                                                              :min "0"
+                                                                              :max "10"
+                                                                              :location ""
+                                                                              :pagesize "200"
+                                                                              :autoFlag "C"
+                                                                              }
+                                                                :socket-timeout 5000
+                                                                :conn-timeout 5000
+                                                                ;:cookie-store my-cs
+                                                                }))})
+
+      (catch Exception e (resp/json {:success false}))
+      )
+
+    )
+
 
   )
 
