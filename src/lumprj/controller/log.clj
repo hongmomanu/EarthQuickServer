@@ -64,10 +64,7 @@
 
   )
 (defn getgroups [groups content]
-  (println (keys  content) groups content)
-
   (> (count (filter (fn [x]
-                      (println (contains? content  x))
             (contains? content  x)) (clojure.string/split groups #","))
   ) 0))
 (defn sendtelmsgdetail [item content telkey]
