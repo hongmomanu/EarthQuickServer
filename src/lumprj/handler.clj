@@ -63,7 +63,7 @@
   ;                                           (map #(str  par8080/lumprjentpath %)(fs/list-dir parentpath))
   ;                                           ))) ;;生成样本缓存
 
-  ;(future (realstream/eqim-server-init));eqim 启动服务监听
+  (future (realstream/eqim-server-init));eqim 启动服务监听
   ;(future (realstream/rts-server-init));rts 启动服务监听
   (timbre/info "创建缓存结束")
   (timbre/info "lumprj started successfully"))

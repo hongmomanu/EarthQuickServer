@@ -99,12 +99,16 @@
   )
 
 (defn log-msgusers-list [params]
-  (resp/json
-    {
-      :results (db/log-msgusers-list params)
-      :totalCount (:counts (first (db/log-msgusers-count params)))
-      }
+  (let [fieldsvalue params
+        ]
+    (resp/json
+      {
+        :results (db/log-msgusers-list fieldsvalue)
+        :totalCount (:counts (first (db/log-msgusers-count fieldsvalue)))
+        }
+      )
     )
+
   )
 (defn log-sendmessage-list [params]
 
@@ -116,6 +120,7 @@
     )
 
   )
+
 (defn log-sendmessage-insert [values]
   (let [ fieldsvalue (assoc values "sendmethod" (json/write-str (get values "sendmethod")))
          ]
@@ -129,10 +134,18 @@
 
   )
 (defn log-msgusers-insert [values]
+  (let [ fieldsvalue (if (vector? (get values "groups")) (assoc values "groups"  (clojure.string/join "," (get values "groups")))
+                        values
+                       )
+         nums (:counts (first (db/getuserbytel (get values "tel"))))
+         ]
+    (if (= nums 0)(if  (> (first (vals (db/addnewsenduser fieldsvalue))) 0) (resp/json {:success true})
+                    (resp/json {:success false :msg "插入数据失败,服务异常!"})
+                    )(resp/json {:success false :msg "插入数据失败,账号已存在!"}))
 
-  (if (> (first (vals (db/addnewsenduser values))) 0) (resp/json {:success true})
-    (resp/json {:success false :msg "插入数据失败"})
     )
+
+
 
   )
 (defn log-msgusers-del [id]
@@ -154,8 +167,15 @@
   )
 (defn log-senduser-update [values]
 
-  (db/updatesenduser values)
-  (resp/json {:success true})
+  (let [
+         fieldsvalue (if (or (nil?(get values "groups"))(string? (get values "groups")))values (assoc values "groups" (clojure.string/join "," (get values "groups"))))
+         ]
+
+    (db/updatesenduser fieldsvalue)
+    (resp/json {:success true})
+    )
+
+
   )
 (defn log-sendmessage-del [id]
 
@@ -217,7 +237,7 @@
                                                                               :min "0"
                                                                               :max "10"
                                                                               :location ""
-                                                                              :pagesize "200"
+                                                                              :pagesize "20000"
                                                                               :autoFlag "C"
                                                                               }
                                                                 :socket-timeout 5000

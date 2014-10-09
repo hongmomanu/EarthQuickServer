@@ -490,7 +490,9 @@
     )
   )
 (defn log-msgusers-list [params]
+  ;(println (read-string (:groups params)) "jack")
   (select messagetel
+    ;(where {:groups [like (str "%" (read-string (:groups params)) "%") ]})
     (limit (:limit params))
     (offset (:start params))
     (order :id :DESC)
