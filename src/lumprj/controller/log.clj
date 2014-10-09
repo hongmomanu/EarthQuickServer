@@ -63,16 +63,30 @@
        )
 
   )
+(defn getgroups [groups content]
+  (println (keys  content) groups content)
+
+  (> (count (filter (fn [x]
+                      (println (contains? content  x))
+            (contains? content  x)) (clojure.string/split groups #","))
+  ) 0))
+(defn sendtelmsgdetail [item content telkey]
+  (if  (or (nil? (:groups item)) (= (:groups item) ""))(println "")
+    (if(getgroups (:groups item) content)(db/insertmsm (:tel item) (get content (first (keys  content)))
+    (get telkey (keyword (subs (:tel item) 0 3))))))
+  )
 (defn sendtelmsg [content]
   (let [
 
          users   (db/log-msgusers-all)
+         content (json/read-str content)
          telkey {:134 1 :135 1  :136 1   :137 1   :138 1   :139 1   :150 1   :151 1  :152 1 :157 1 :158 1  :159 1  :182 1  :183 1
                  :187 1 :188 1  :130 2  :131 2  :132 2  :155 2  :156 2  :185 2
                  :186 2  :133 3  :153 3  :180 3 :189  3}
 
          ]
-    (doall (map #(db/insertmsm (:tel %) content (get telkey (keyword (subs (:tel %) 0 3)))) users))
+    (doall (map #(sendtelmsgdetail % content telkey) users))
+    ;(println (get content "default"))
     (resp/json {:success true})
     )
 
@@ -123,9 +137,12 @@
 
 (defn log-sendmessage-insert [values]
   (let [ fieldsvalue (assoc values "sendmethod" (json/write-str (get values "sendmethod")))
+         fieldsvalues (if (vector? (get fieldsvalue "groups")) (assoc fieldsvalue "groups"  (clojure.string/join "," (get fieldsvalue "groups")))
+                        fieldsvalue
+                       )
          ]
 
-    (if (> (first (vals (db/addnewsendmessage fieldsvalue))) 0) (resp/json {:success true})
+    (if (> (first (vals (db/addnewsendmessage fieldsvalues))) 0) (resp/json {:success true})
       (resp/json {:success false :msg "插入数据失败"})
       )
     )
@@ -156,9 +173,10 @@
 
   (let [
          fieldsvalue (if (nil?(get values "sendmethod"))values (assoc values "sendmethod" (json/write-str (get values "sendmethod"))))
+         fieldsvalues (if (or (nil?(get fieldsvalue "groups"))(string? (get fieldsvalue "groups")))fieldsvalue (assoc fieldsvalue "groups" (clojure.string/join "," (get fieldsvalue "groups"))))
          ]
 
-    (db/updatesendmessage fieldsvalue)
+    (db/updatesendmessage fieldsvalues)
     (resp/json {:success true})
     )
 
@@ -191,6 +209,7 @@
         ]
     (:body content)
     )
+  ;(resp/json {:success true})
 
   )
 
