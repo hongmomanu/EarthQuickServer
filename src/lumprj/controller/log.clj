@@ -88,21 +88,21 @@
     )
 
   )
-(defn insert-users [telnum username]
+(defn insert-users [telnum username group]
   (let [
          nums (:counts (first (db/getuserbytel telnum)))
          ]
-    (if (= nums 0) (db/addnewsenduser {:username username :tel telnum}))
+    (if (= nums 0) (db/addnewsenduser {:username username :tel telnum :groups group}))
 
     )
 
   )
 
 
-(defn log-imptelusers [filepath]
+(defn log-imptelusers [filepath group]
   (let [data (:content (first (:content (xml/parse filepath))))
         ]
-    (doall(map #(insert-users (:tel (:attrs %)) (:name (:attrs %)) ) data))
+    (doall(map #(insert-users (:tel (:attrs %)) (:name (:attrs %)) group ) data))
     (resp/json {:success true})
     )
 

@@ -34,8 +34,8 @@
 
     )
 
-  (GET "/log/imptelusers" [filepath]
-     (logmanager/log-imptelusers filepath)
+  (GET "/log/imptelusers" [filepath group]
+     (logmanager/log-imptelusers filepath group)
     )
 
   (POST "/log/insertSendMsgUsers" request

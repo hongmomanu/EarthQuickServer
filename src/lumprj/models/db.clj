@@ -492,7 +492,13 @@
 (defn log-msgusers-list [params]
   ;(println (read-string (:groups params)) "jack")
   (select messagetel
-    ;(where {:groups [like (str "%" (read-string (:groups params)) "%") ]})
+
+    (where (or {:groups [like (str "%" (:keyword params) "%") ]}
+               {:tel [like (str "%" (:keyword params) "%") ]}
+               {:username [like (str "%" (:keyword params) "%") ]}
+             )
+
+      )
     (limit (:limit params))
     (offset (:start params))
     (order :id :DESC)
@@ -620,6 +626,12 @@
   )
 (defn log-msgusers-count [params]
   (select messagetel
+    (where (or {:groups [like (str "%" (:keyword params) "%") ]}
+             {:tel [like (str "%" (:keyword params) "%") ]}
+             {:username [like (str "%" (:keyword params) "%") ]}
+             )
+
+      )
     (aggregate (count :id) :counts)
     )
   )
