@@ -1,5 +1,5 @@
 (ns lumprj.controller.log
-  (:import (lumprj.java.eqim ImgIdent)
+  (:import
            (java.net URL)
            )
   (:use compojure.core)
@@ -229,7 +229,7 @@
 
 
 
-(defn log-getjopensdata [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url]
+(defn log-getjopensdata [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location]
   (let [my-cs (clj-http.cookies/cookie-store)
         h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"}
         ]
@@ -250,14 +250,14 @@
                                                                               :lonmax "180"
                                                                               :latmin "-90"
                                                                               :latmax "90"
-                                                                              :min "0"
+                                                                              :min "0.001"
                                                                               :max "10"
-                                                                              :location ""
+                                                                              :location location
                                                                               :pagesize "20000"
                                                                               :autoFlag "C"
                                                                               }
-                                                                :socket-timeout 5000
-                                                                :conn-timeout 5000
+                                                                :socket-timeout 50000
+                                                                :conn-timeout 50000
                                                                 ;:cookie-store my-cs
                                                                 }))})
 
