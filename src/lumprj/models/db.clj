@@ -575,10 +575,15 @@
     (aggregate (count :id) :counts)
     )
   )
+(defn getuseritembytel [tel]
+  (select messagetel
+    (where {:tel tel})
+    )
+  )
 (defn updatesenduser [key-values]
   (update messagetel
     (set-fields key-values)
-    (where {:id  (get key-values "id")}
+    (where {:id  (:id key-values )}
       )
     )
   )

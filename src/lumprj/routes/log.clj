@@ -89,11 +89,27 @@
 
     )
 
-  (GET "/log/loggetjopensdata" [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location]
-    (logmanager/log-getjopensdata startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location)
+  (GET "/log/loggetjopensdata" [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location
+                                lonmin
+                                lonmax
+                                latmin
+                                latmax]
+    (logmanager/log-getjopensdata startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location
+                                  lonmin
+                                  lonmax
+                                  latmin
+                                  latmax)
     )
-  (POST "/log/loggetjopensdata" [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location]
-    (logmanager/log-getjopensdata startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location)
+  (POST "/log/loggetjopensdata" [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location
+                                 lonmin
+                                 lonmax
+                                 latmin
+                                 latmax]
+    (logmanager/log-getjopensdata startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location
+                                  lonmin
+                                  lonmax
+                                  latmin
+                                  latmax)
     )
   (GET "/log/logsystemstatics" request
     (logmanager/log-system-statics (:params  request))

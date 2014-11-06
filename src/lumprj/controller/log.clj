@@ -90,9 +90,14 @@
   )
 (defn insert-users [telnum username group]
   (let [
-         nums (:counts (first (db/getuserbytel telnum)))
+         items (db/getuseritembytel telnum)
+         groupname (if(= (count items)0)group (:groups (first items)))
+         iscontain (if(= (count items)0) 0 (.indexOf groupname group))
+         groups (if (>= iscontain 0) groupname (str groupname "," group))
          ]
-    (if (= nums 0) (db/addnewsenduser {:username username :tel telnum :groups group}))
+    ;(println iscontain groupname group groups (= (count items) 0 ) )
+    (if (= (count items) 0) (db/addnewsenduser {:username username :tel telnum :groups group})
+      (db/updatesenduser (conj (first items) {:groups groups})))
 
     )
 
@@ -102,7 +107,7 @@
 (defn log-imptelusers [filepath group]
   (let [data (:content (first (:content (xml/parse filepath))))
         ]
-    (doall(map #(insert-users (:tel (:attrs %)) (:name (:attrs %)) group ) data))
+    (dorun(map #(insert-users (:tel (:attrs %)) (:name (:attrs %)) group ) data))
     (resp/json {:success true})
     )
 
@@ -229,7 +234,11 @@
 
 
 
-(defn log-getjopensdata [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location]
+(defn log-getjopensdata [startYear startMonth startDay startHour stopYear stopMonth stopDay stopHour url location
+                         lonmin
+                         lonmax
+                         latmin
+                         latmax]
   (let [my-cs (clj-http.cookies/cookie-store)
         h {"User-Agent" "Mozilla/5.0 (Windows NT 6.1;) Gecko/20100101 Firefox/13.0.1"}
         ]
@@ -246,10 +255,10 @@
                                                                               :stopDay stopDay
                                                                               :stopHour stopHour
                                                                               ;:stopMinute "01"
-                                                                              :lonmin "-180"
-                                                                              :lonmax "180"
-                                                                              :latmin "-90"
-                                                                              :latmax "90"
+                                                                              :lonmin (if (nil? lonmin) "-180" lonmin)
+                                                                              :lonmax (if (nil? lonmax) "180" lonmax)
+                                                                              :latmin (if (nil? latmin) "-90" latmin)
+                                                                              :latmax (if (nil? latmax) "90" latmax)
                                                                               :min "0.001"
                                                                               :max "10"
                                                                               :location location
