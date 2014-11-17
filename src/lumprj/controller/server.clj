@@ -64,12 +64,20 @@
     )
 
   )
-(defn serverport-app-check [serverid ip]
-  (let [results (db/serverport serverid)]
-    (map #(conj % {:isconnect (if (> (:type %) 0)  (system/checkappname ip (:servervalue %) @SSH_SHOW_LIST) (system/checkport ip (:servervalue %)))}) results)
+(defn check-ssh-connect [ip username pass]
+  (let [connect (get @SSH_SHOW_LIST (read-string (str ":" ip)))
+        ]
+    ;(println username pass (and (nil? connect) (not (or (nil? username) (= "" username))) (not (or (nil? pass) (= "" pass)))))
+    (when (and (nil? connect) (not (or (nil? username) (= "" username))) (not (or (nil? pass) (= "" pass))))  (swap! SSH_SHOW_LIST conj (system/get-ssh-connect ip username pass)))
+
     )
   )
-(defn serverport-app [serverid ip]
+(defn serverport-app-check [serverid ip ]
+  (let [results (db/serverport serverid)]
+    (map #(conj % {:isconnect (if (> (:type %) 0)  (system/checkappname ip (:servervalue %)  @SSH_SHOW_LIST) (system/checkport ip (:servervalue %)))}) results)
+    )
+  )
+(defn serverport-app [serverid ip ]
   (let [results (serverport-app-check serverid ip)]
     results
     )
@@ -167,12 +175,15 @@
   (let [results (db/serverlist start limit)]
     ;;(println (server-cpu "192.168.2.112"))
     (resp/json {:results (map #(conj %
-                                 (let [isping (system/ping (:servervalue %))]
+                                 (let [isping (system/ping (:servervalue %))
+                                       test (check-ssh-connect (:servervalue %) (:username %) (:password %))
+                                       ]
                                    {:isping isping
+                                    :apps (if(true? isping) (serverport-app (:key %) (:servervalue %)) [])
                                     :cpu (if(true? isping) (server-cpu (:servervalue %)) "")
                                     :mem (if(true? isping) (server-mem (:servervalue %)) "")
                                     :disk (if(true? isping) (server-disk (:servervalue %))  "")
-                                    :apps (if(true? isping) (serverport-app (:key %) (:servervalue %)) [])}
+                                    }
                                    )
                                  ) results)
                 :totalCount (:counts (first (db/servercount)))})

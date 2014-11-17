@@ -22,6 +22,9 @@
 )
 
 (defn checkappname [ip appname SSH_SHOW_LIST]
+
+
+
   (let [result (execCommand ip  appname SSH_SHOW_LIST) ]
     ;(println ip appname)
     ;(println result)
@@ -69,6 +72,8 @@
 (defn execCommand [ip cmdstr SSH_SHOW_LIST]
   (let [connect (get SSH_SHOW_LIST (read-string (str ":" ip)))
         ]
+
+    ;(println connect)
     (if (nil? connect)[] ( let [
                                  sess (try
                                         (.openSession connect)
